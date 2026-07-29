@@ -3,6 +3,7 @@ package com.ankit.studentmanagement.controller;
 import com.ankit.studentmanagement.dto.request.StudentRequest;
 import com.ankit.studentmanagement.dto.response.StudentResponse;
 import com.ankit.studentmanagement.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
@@ -73,12 +74,12 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentById(id));
     }
     @PostMapping
-    public ResponseEntity<StudentResponse> createStudent(@RequestBody StudentRequest request){
+    public ResponseEntity<StudentResponse> createStudent(@Valid @RequestBody StudentRequest request){
     return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponse> updateStudents(@PathVariable Integer id , @RequestBody StudentRequest request){
+    public ResponseEntity<StudentResponse> updateStudents(@PathVariable Integer id , @Valid @RequestBody StudentRequest request){
         return ResponseEntity.ok(studentService.updateStudents(id, request));
     }
 
