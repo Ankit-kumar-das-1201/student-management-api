@@ -2,8 +2,13 @@ package com.ankit.studentmanagement.controller;
 
 import com.ankit.studentmanagement.dto.request.StudentRequest;
 import com.ankit.studentmanagement.dto.response.StudentResponse;
+import com.ankit.studentmanagement.entity.Student;
 import com.ankit.studentmanagement.service.StudentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+import org.springdoc.core.annotations.ParameterObject;
+@Tag(
+        name = "Student Management API",
+        description = "Rest API for managing Students"
+)
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
@@ -57,6 +66,7 @@ public class StudentController {
 //       return  ResponseEntity.ok(repository.save(request));
 //    }
 
+
     private final StudentService studentService;
 
 
@@ -65,8 +75,8 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StudentResponse>> getAllStudents(){
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ResponseEntity<Page<StudentResponse>> getAllStudents(@ParameterObject Pageable pageable){
+        return ResponseEntity.ok(studentService.getAllStudents(pageable));
     }
 
     @GetMapping("/{id}")
@@ -88,4 +98,8 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }
+   @GetMapping("/search")
+    public ResponseEntity<List<StudentResponse>> searchStudentByName(@RequestParam String name){
+        return ResponseEntity.ok(studentService.searchStudentsByName(name));
+   }
 }

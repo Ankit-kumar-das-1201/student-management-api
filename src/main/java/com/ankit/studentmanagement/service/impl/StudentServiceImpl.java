@@ -6,6 +6,8 @@ import com.ankit.studentmanagement.entity.Student;
 import com.ankit.studentmanagement.exception.StudentNotFoundException;
 import com.ankit.studentmanagement.repository.StudentRepository;
 import com.ankit.studentmanagement.service.StudentService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +16,10 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
 
 
-    private final StudentRepository repository;
+    private final StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentRepository repository) {
-        this.repository = repository;
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
 
@@ -32,17 +34,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentResponse> getAllStudents() {
-        List<Student> students = repository.findAll();
-        return students.stream()
-                .map(this::mapToResponse)
-                .toList();
+    public Page<StudentResponse> getAllStudents(Pageable pageable) {
+       Page<Student> studentPage = studentRepository.findAll(pageable);
+       return studentPage.map(this::mapToResponse);
 
     }
 
     @Override
     public StudentResponse getStudentById(Integer id) {
-        Student student = repository.findById(id)
+        Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException(id));
         return mapToResponse(student);
     }
@@ -54,7 +54,7 @@ public class StudentServiceImpl implements StudentService {
         student.setEmail(request.email());
         student.setAge(request.age());
 
-        Student savedStudent = repository.save(student);
+        Student savedStudent = studentRepository.save(student);
 //        StudentResponse response = new StudentResponse(savedStudent.getId(),savedStudent.getAge(), savedStudent.getName(), savedStudent.getEmail());
 //        return response;
         return mapToResponse(savedStudent);
@@ -62,18 +62,27 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse updateStudents(Integer id, StudentRequest request) {
-        Student student = repository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
+        Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
         student.setName(request.name());
         student.setAge(request.age());
         student.setEmail(request.email());
-      repository.save(student);
+      studentRepository.save(student);
       return mapToResponse(student);
     }
 
     @Override
     public void deleteStudent(Integer id) {
-        Student student = repository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
-        repository.delete(student);
+        Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
+        studentRepository.delete(student);
 
+    }
+    @Override
+    public List<StudentResponse> searchStudentsByName(String name) {
+
+        List<Student> students = studentRepository.findByNameContainingIgnoreCase(name);
+
+        return students.stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 }
