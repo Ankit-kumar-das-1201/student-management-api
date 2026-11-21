@@ -5,10 +5,8 @@ import com.ankit.studentmanagement.dto.response.StudentResponse;
 import com.ankit.studentmanagement.entity.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface StudentService {
 
@@ -25,6 +23,11 @@ public interface StudentService {
 
     List<StudentResponse> searchStudentsByName(String name);
 
+    public StudentResponse updateStudentName(Integer id);
+
+    public List<StudentResponse> findStudentsOlderThan(Integer age);
+
+    public  List<StudentResponse> findStudentsOlderThanNative(Integer age);
 }
 
 

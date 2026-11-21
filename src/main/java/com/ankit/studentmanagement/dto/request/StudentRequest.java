@@ -12,7 +12,7 @@ public record StudentRequest(
         String email,
 
         @NotNull(message = "Age must be required")
-        @Min(value = 18, message = "Age must atleast be  18")
+        @Min(value = 18, message = "Age must at least be  18")
         @Max(value= 100, message = "Age must not exceeds 100")
         Integer age
 ) {

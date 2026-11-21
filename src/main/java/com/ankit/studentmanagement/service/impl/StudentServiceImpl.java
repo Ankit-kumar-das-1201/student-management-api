@@ -6,8 +6,9 @@ import com.ankit.studentmanagement.entity.Student;
 import com.ankit.studentmanagement.exception.StudentNotFoundException;
 import com.ankit.studentmanagement.repository.StudentRepository;
 import com.ankit.studentmanagement.service.StudentService;
-import org.springframework.data.domain.Pageable;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,8 +36,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Page<StudentResponse> getAllStudents(Pageable pageable) {
-       Page<Student> studentPage = studentRepository.findAll(pageable);
-       return studentPage.map(this::mapToResponse);
+        Page<Student> studentPage = studentRepository.findAll(pageable);
+        return studentPage.map(this::mapToResponse);
 
     }
 
@@ -66,8 +67,8 @@ public class StudentServiceImpl implements StudentService {
         student.setName(request.name());
         student.setAge(request.age());
         student.setEmail(request.email());
-      studentRepository.save(student);
-      return mapToResponse(student);
+        studentRepository.save(student);
+        return mapToResponse(student);
     }
 
     @Override
@@ -76,11 +77,38 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.delete(student);
 
     }
+
     @Override
     public List<StudentResponse> searchStudentsByName(String name) {
 
         List<Student> students = studentRepository.findByNameContainingIgnoreCase(name);
 
+        return students.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public StudentResponse updateStudentName(Integer id) {
+        Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
+        student.setName("This must roll back");
+//        throw new RuntimeException("Testing transaction rollback");
+      return mapToResponse(student);
+    }
+    @Override
+    public List<StudentResponse> findStudentsOlderThan(Integer age) {
+
+        List<Student> students =
+                studentRepository.findStudentsOlderThan(age);
+
+        return students.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+    @Override
+    public List<StudentResponse> findStudentsOlderThanNative(Integer age){
+        List<Student> students = studentRepository.findStudentsOlderThanNative(age);
         return students.stream()
                 .map(this::mapToResponse)
                 .toList();

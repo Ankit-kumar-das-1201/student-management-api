@@ -5,12 +5,11 @@ import com.ankit.studentmanagement.dto.response.StudentResponse;
 import com.ankit.studentmanagement.entity.Student;
 import com.ankit.studentmanagement.service.StudentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,8 +69,8 @@ public class StudentController {
     private final StudentService studentService;
 
 
-    public StudentController(StudentService Studentservice) {
-        this.studentService = Studentservice;
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
     }
 
     @GetMapping
@@ -94,12 +93,26 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public  ResponseEntity<StudentResponse> deleteStudent (@PathVariable Integer id){
+    public  ResponseEntity<Void> deleteStudent (@PathVariable Integer id){
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }
    @GetMapping("/search")
     public ResponseEntity<List<StudentResponse>> searchStudentByName(@RequestParam String name){
         return ResponseEntity.ok(studentService.searchStudentsByName(name));
+   }
+   @PutMapping("/test/{id}")
+    public ResponseEntity<StudentResponse> test(@PathVariable Integer id){
+        return ResponseEntity.ok(studentService.updateStudentName(id));
+
+   }
+   @GetMapping("/filter/older-than")
+    public ResponseEntity<List<StudentResponse>> findStudentsOlderThan(@RequestParam Integer age){
+        return ResponseEntity.ok(studentService.findStudentsOlderThan(age));
+   }
+
+   @GetMapping( "/filter/native/older-than")
+    public ResponseEntity<List<StudentResponse>> findStudentsOlderThanNative(@RequestParam Integer age){
+        return ResponseEntity.ok(studentService.findStudentsOlderThanNative(age));
    }
 }
