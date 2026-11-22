@@ -59,7 +59,7 @@ A RESTful Student Management API built with **Java, Spring Boot, Spring Data JPA
 | Testcontainers | PostgreSQL container for integration tests |
 | H2 | Test-scope database dependency present in the Maven configuration |
 
-> The versions above reflect the `pom.xml` currently available in the linked GitHub repository. Keep this section in sync if you change the Java or Spring Boot version.
+
 
 ## Application Architecture
 
