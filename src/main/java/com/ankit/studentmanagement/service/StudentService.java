@@ -28,6 +28,8 @@ public interface StudentService {
     public List<StudentResponse> findStudentsOlderThan(Integer age);
 
     public  List<StudentResponse> findStudentsOlderThanNative(Integer age);
+
+    public StudentResponse findStudentByEmail(String email);
 }
 
 

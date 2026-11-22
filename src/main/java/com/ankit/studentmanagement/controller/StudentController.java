@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springdoc.core.annotations.ParameterObject;
 @Tag(
         name = "Student Management API",
@@ -114,5 +116,10 @@ public class StudentController {
    @GetMapping( "/filter/native/older-than")
     public ResponseEntity<List<StudentResponse>> findStudentsOlderThanNative(@RequestParam Integer age){
         return ResponseEntity.ok(studentService.findStudentsOlderThanNative(age));
+   }
+   @GetMapping("/filter/ByEmail")
+    public StudentResponse findStudentByEmail(@RequestParam String email){
+       StudentResponse student = studentService.findStudentByEmail(email);
+       return student;
    }
 }

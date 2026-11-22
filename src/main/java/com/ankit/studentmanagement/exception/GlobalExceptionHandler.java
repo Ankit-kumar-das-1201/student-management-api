@@ -33,6 +33,22 @@ public class GlobalExceptionHandler {
 
 
     }
+
+    @ExceptionHandler(StudentNotFoundWithEmail.class)
+    public ResponseEntity<ErrorResponse> handleStudentNotFoundWithEmail(StudentNotFoundWithEmail er, HttpServletRequest request){
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                er.getMessage(),
+                List.of(),
+                request.getRequestURI()
+        );
+        return
+                ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(errorResponse);
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex , HttpServletRequest request){
         var bindingResult = ex.getBindingResult();

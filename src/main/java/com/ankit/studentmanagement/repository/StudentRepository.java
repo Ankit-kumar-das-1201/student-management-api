@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Integer> {
@@ -22,4 +23,8 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
             nativeQuery = true
     )
     List<Student> findStudentsOlderThanNative(@Param("age") Integer age);
+
+    Optional<Student> findStudentByEmail(String email);
+
+
 }

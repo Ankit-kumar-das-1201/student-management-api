@@ -4,6 +4,7 @@ import com.ankit.studentmanagement.dto.request.StudentRequest;
 import com.ankit.studentmanagement.dto.response.StudentResponse;
 import com.ankit.studentmanagement.entity.Student;
 import com.ankit.studentmanagement.exception.StudentNotFoundException;
+import com.ankit.studentmanagement.exception.StudentNotFoundWithEmail;
 import com.ankit.studentmanagement.repository.StudentRepository;
 import com.ankit.studentmanagement.service.StudentService;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -112,5 +114,12 @@ public class StudentServiceImpl implements StudentService {
         return students.stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+    @Override
+    public StudentResponse findStudentByEmail(String email){
+        Student student =
+                studentRepository.findStudentByEmail(email)
+                        .orElseThrow(()-> new StudentNotFoundWithEmail(email));
+        return mapToResponse(student);
     }
 }
