@@ -72,11 +72,11 @@ class StudentRepositoryTest {
     @Test
     void shouldReturnStudentWhenNameMatchesIgnoringCase() {
         //given
-        String name = "ankit";
+        String name = "Person0";
         Student student = new Student();
         student.setAge(15);
-        student.setEmail("ankit@gmail.com");
-        student.setName("Ankit Kumar Das");
+        student.setEmail("Person0@gmail.com");
+        student.setName("Person0");
         studentRepository.save(student);
         // when
         List<Student> studentByName = studentRepository.findByNameContainingIgnoreCase(name);
@@ -84,7 +84,7 @@ class StudentRepositoryTest {
         assertThat(studentByName).isNotEmpty();
         assertThat(studentByName)
                 .extracting(Student::getName)
-                .contains("Ankit Kumar Das");
+                .contains("Person0");
 
     }
 

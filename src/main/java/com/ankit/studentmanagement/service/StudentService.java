@@ -23,7 +23,7 @@ public interface StudentService {
 
     List<StudentResponse> searchStudentsByName(String name);
 
-    public StudentResponse updateStudentName(Integer id);
+    public StudentResponse updateStudentName(Integer id, String newName);
 
     public List<StudentResponse> findStudentsOlderThan(Integer age);
 

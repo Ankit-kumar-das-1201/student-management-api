@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springdoc.core.annotations.ParameterObject;
+
+import javax.print.DocFlavor;
+
 @Tag(
         name = "Student Management API",
         description = "Rest API for managing Students"
@@ -104,8 +107,8 @@ public class StudentController {
         return ResponseEntity.ok(studentService.searchStudentsByName(name));
    }
    @PutMapping("/test/{id}")
-    public ResponseEntity<StudentResponse> test(@PathVariable Integer id){
-        return ResponseEntity.ok(studentService.updateStudentName(id));
+    public ResponseEntity<StudentResponse> test(@PathVariable Integer id , String name){
+        return ResponseEntity.ok(studentService.updateStudentName(id, name));
 
    }
    @GetMapping("/filter/older-than")

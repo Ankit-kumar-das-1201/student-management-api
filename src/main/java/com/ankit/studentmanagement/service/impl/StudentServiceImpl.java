@@ -3,6 +3,7 @@ package com.ankit.studentmanagement.service.impl;
 import com.ankit.studentmanagement.dto.request.StudentRequest;
 import com.ankit.studentmanagement.dto.response.StudentResponse;
 import com.ankit.studentmanagement.entity.Student;
+import com.ankit.studentmanagement.exception.StudentEmailAlreadyExistsException;
 import com.ankit.studentmanagement.exception.StudentNotFoundException;
 import com.ankit.studentmanagement.exception.StudentNotFoundWithEmail;
 import com.ankit.studentmanagement.repository.StudentRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,6 +45,9 @@ public class StudentServiceImpl implements StudentService {
 
     }
 
+
+
+
     @Override
     public StudentResponse getStudentById(Integer id) {
         Student student = studentRepository.findById(id)
@@ -66,6 +71,16 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentResponse updateStudents(Integer id, StudentRequest request) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
+
+        if (!Objects.equals(student.getEmail(), request.email())) {
+
+            Optional<Student> existingStudent =
+                    studentRepository.findStudentByEmail(request.email());
+
+            if (existingStudent.isPresent()) {
+                throw new StudentEmailAlreadyExistsException(request.email());
+            }
+        }
         student.setName(request.name());
         student.setAge(request.age());
         student.setEmail(request.email());
@@ -91,10 +106,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    @Transactional
-    public StudentResponse updateStudentName(Integer id) {
+//    @Transactional
+    public StudentResponse updateStudentName(Integer id, String newName) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
-        student.setName("This must roll back");
+        student.setName(newName);
+        studentRepository.save(student);
 //        throw new RuntimeException("Testing transaction rollback");
       return mapToResponse(student);
     }
